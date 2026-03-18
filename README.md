@@ -4,6 +4,7 @@
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://NittanyLion.github.io/ResourceTimers.jl/dev/)
 [![Build Status](https://github.com/NittanyLion/ResourceTimers.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/NittanyLion/ResourceTimers.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
+![Authored by](authored_by.svg)
 
 `ResourceTimers.jl` is a lightweight, thread-safe package for measuring execution time and memory allocation across multiple tasks with minimal overhead. It is designed as a low-latency alternative to `TimerOutputs.jl` for scenarios where performance and thread safety are critical.
 
@@ -30,12 +31,13 @@ using ResourceTimers
 labels = [:compute, :io, :overhead]
 rt = ResourceTimer(labels)
 
-# 2. Measure code blocks using threadid() for thread safety
-@meas rt Threads.threadid() :compute begin
+# 2. Measure code blocks using an explicit task ID for thread safety
+task_id = 1
+@meas rt task_id compute begin
     sum(rand(1000, 1000))
 end
 
-@meas rt Threads.threadid() :io begin
+@meas rt task_id io begin
     # Simulated I/O
 end
 
@@ -49,3 +51,19 @@ reset!(rt)
 ## How It Works
 
 `ResourceTimers.jl` pre-allocates a matrix of accumulators indexed by `(task_id, label)`. The `@meas` macro records elapsed time, allocated bytes, and GC time directly into the accumulator with no heap allocations. Thread safety is guaranteed as long as each concurrent task uses a unique `task_id`.
+
+## Multi-threaded Usage
+
+```julia
+using ResourceTimers
+
+rt = ResourceTimer([:work])
+
+Threads.@threads for i in 1:100
+    @meas rt i work begin
+        sleep(0.01)
+    end
+end
+
+show(rt)
+```

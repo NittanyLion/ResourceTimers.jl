@@ -10,10 +10,10 @@ It is designed as an alternative to `TimerOutputs.jl` for high-performance scena
 
 ## Features
 
-- **Thread-safe**: Designed for use with `Base.Threads`.
-- **Minimal overhead**: Zero allocations on the hot path (uses mutable structs and pre-allocated storage).
-- **Simple API**: Use the `@meas` macro to wrap code blocks.
-- **Detailed reporting**: Tracks execution time, memory allocation, and GC time.
+- **Thread-safe**: Each concurrent task writes to its own storage slot — no locks or atomics required.
+- **Minimal overhead**: Zero allocations on the hot path.
+- **Simple API**: Wrap any expression with the `@meas` macro.
+- **Detailed reporting**: Tracks execution time, memory allocation, and GC time per label.
 
 ## Installation
 
@@ -27,16 +27,36 @@ Pkg.add(url="https://github.com/NittanyLion/ResourceTimers.jl")
 ```julia
 using ResourceTimers
 
-# 1. Define labels and create a timer
-labels = [:compute, :io, :overhead]
-rt = ResourceTimer(labels)
+# 1. Create a timer with the labels you want to track
+rt = ResourceTimer([:compute, :io, :overhead])
 
-# 2. Measure code blocks
-# Use threadid() as the task index for thread-safe storage
-@meas rt Threads.threadid() :compute begin
+# 2. Measure code blocks (pass a unique integer task ID per thread/task)
+task_id = 1
+@meas rt task_id compute begin
     sum(rand(1000, 1000))
 end
 
-# 3. View results
+# 3. View aggregated results across all tasks
+show(rt)
+
+# 4. Reset for a new run
+reset!(rt)
+```
+
+## Multi-threaded Usage
+
+```julia
+using ResourceTimers
+
+rt = ResourceTimer([:work])
+
+Threads.@threads for i in 1:100
+    @meas rt i work begin
+        sleep(0.01)
+    end
+end
+
 show(rt)
 ```
+
+See the [API Reference](@ref) for full details.

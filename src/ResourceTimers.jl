@@ -86,12 +86,13 @@ Measure the execution time and memory allocation of `expr` and record it in `tim
 # Arguments
 - `timer`: The `ResourceTimer` instance.
 - `task_id`: An integer representing the current task or thread ID. This determines which accumulator to update.
-- `label`: A symbol (must be one of the labels defined in `timer`) identifying the code block.
+- `label`: A bare identifier (e.g. `compute`, not `:compute`) naming the code block. Must match one of the labels defined in `timer`.
 - `expr`: The expression to evaluate and measure.
 
 # Example
 ```julia
-@meas rt Threads.threadid() :computation begin
+task_id = 1
+@meas rt task_id computation begin
     # ... computation ...
 end
 ```
