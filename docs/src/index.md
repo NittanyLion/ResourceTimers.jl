@@ -28,7 +28,7 @@ Pkg.add(url="https://github.com/NittanyLion/ResourceTimers.jl")
 using ResourceTimers
 
 # 1. Create a timer with the labels you want to track
-rt = ResourceTimer([:compute, :io, :overhead])
+const rt = ResourceTimer([:compute, :io, :overhead])
 
 # 2. Measure code blocks (pass a unique integer task ID per thread/task)
 task_id = 1
@@ -45,18 +45,18 @@ reset!(rt)
 
 ## Multi-threaded Usage
 
-```julia
+```@example
 using ResourceTimers
 
-rt = ResourceTimer([:work])
+const rt = ResourceTimer([:work], 1000)
 
-Threads.@threads for i in 1:100
+Threads.@threads for i in 1:1000
     @meas rt i work begin
         sleep(0.01)
     end
 end
 
-show(rt)
+println(rt)
 ```
 
 See the [API Reference](@ref) for full details.

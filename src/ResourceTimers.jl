@@ -78,6 +78,8 @@ function ResourceTimer(labels::Vector{Symbol}; ntasks::Int = 256)
     ResourceTimer(storage, label_to_idx, labels)
 end
 
+ResourceTimer(labels::Vector{Symbol}, ntasks ) = ResourceTimer(labels::Vector{Symbol}; ntasks = ntasks ) 
+
 """
     @meas(timer, task_id, label, expr)
 
