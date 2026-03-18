@@ -3,7 +3,7 @@
 Pkg.add(url=&quot;https://github.com/NittanyLion/ResourceTimers.jl&quot;)</code></pre><h2 id="Quick-Start"><a class="docs-heading-anchor" href="#Quick-Start">Quick Start</a><a id="Quick-Start-1"></a><a class="docs-heading-anchor-permalink" href="#Quick-Start" title="Permalink"></a></h2><pre><code class="language-julia hljs">using ResourceTimers
 
 # 1. Create a timer with the labels you want to track
-rt = ResourceTimer([:compute, :io, :overhead])
+const rt = ResourceTimer([:compute, :io, :overhead])
 
 # 2. Measure code blocks (pass a unique integer task ID per thread/task)
 task_id = 1
@@ -17,12 +17,16 @@ show(rt)
 # 4. Reset for a new run
 reset!(rt)</code></pre><h2 id="Multi-threaded-Usage"><a class="docs-heading-anchor" href="#Multi-threaded-Usage">Multi-threaded Usage</a><a id="Multi-threaded-Usage-1"></a><a class="docs-heading-anchor-permalink" href="#Multi-threaded-Usage" title="Permalink"></a></h2><pre><code class="language-julia hljs">using ResourceTimers
 
-rt = ResourceTimer([:work])
+const rt = ResourceTimer([:work], 1000)
 
-Threads.@threads for i in 1:100
+Threads.@threads for i in 1:1000
     @meas rt i work begin
         sleep(0.01)
     end
 end
 
-show(rt)</code></pre><p>See the <a href="api/#API-Reference">API Reference</a> for full details.</p></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="api/">API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 18 March 2026 03:49">Wednesday 18 March 2026</span>. Using Julia version 1.12.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+println(rt)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi"><span class="sgr1">label                                    <span class="sgr32"> count</span>  <span class="sgr31">    time    </span>  <span class="sgr34">   mem   </span>  <span class="sgr33"> gctime </span></span>
+----------------------------------------------------------------------------------
+work ‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧ <span class="sgr32">  1000</span>  <span class="sgr31">    11.240</span><span class="sgr90"> s</span>  <span class="sgr34">     0</span><span class="sgr90"> MB</span>  <span class="sgr33"> 0.000</span><span class="sgr90"> s</span>
+--------------------------------------------------------------------------------
+<span class="sgr1">TOTAL                                   </span> <span class="sgr32">  1000</span>  <span class="sgr31">    11.240</span><span class="sgr90"> s</span>  <span class="sgr34">     0</span><span class="sgr90"> MB</span>  <span class="sgr33"> 0.000</span><span class="sgr90"> s</span></code></pre><p>See the <a href="api/#API-Reference">API Reference</a> for full details.</p></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="api/">API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 18 March 2026 12:24">Wednesday 18 March 2026</span>. Using Julia version 1.12.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
